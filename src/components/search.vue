@@ -1,7 +1,7 @@
 <template>
   <view class="search" :class="{focused:isFocused}">
     <view class="input-box">
-      <input type="text" @focus="goSearch" />
+      <input :placeholder="placeholder" type="text" @focus="goSearch" />
       <text class='cancel' @click='handleCancel'>取消</text>
     </view>
     <!-- 搜索结果 -->
@@ -13,7 +13,8 @@
 export default {
   data() {
     return {
-      isFocused: false//背景状态定义
+      isFocused: false,//背景状态定义
+      placeholder:''
     };
   },
   methods: {
@@ -33,21 +34,66 @@ export default {
 
 <style lang="less" scoped>
 .search {
+  .content {
+    position: absolute;
+    top: 90rpx;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9;
+    background-color:#fff;
+    display: none;
+  }
   .input-box {
     background-color: #ff2d4a;
     padding: 20rpx 16rpx;
     display: flex;
+    position: relative;
     input {
       background-color: #fff;
+      padding-left: 70rpx;
+      font-size: 27rpx;
       flex: 1;
     }
     .cancel {
       display: none;
     }
+    &::before {
+      content:"";
+      width: 32rpx;
+      height: 32rpx;
+      display: none;
+      position: absolute;
+      top: 50%;
+      transform: translate(20rpx, -50%);
+      background-image: url(http://static.botue.com/ugo/images/icon_search%402x.png);
+      background-size: 32rpx;
+      background-repeat: no-repeat;
+    }
+    &::after {
+      content:"搜索";
+      display: block;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      padding-left: 40rpx;
+      transform: translate(-50%, -50%);
+      font-size: 24rpx;
+      color: #ccc;
+      background-image: url(http://static.botue.com/ugo/images/icon_search%402x.png);
+      background-size: 32rpx;
+      background-repeat: no-repeat;
+    }
   }
   &.focused {
     .input-box {
       background-color: #eeeeee;
+      &::before {
+        display: block;
+      }
+      &::after {
+        display: none;
+      }
     }
     .cancel {
       display: block;
@@ -56,6 +102,9 @@ export default {
       line-height: 50rpx;
       font-size: 30rpx;
       text-align: center;
+    }
+    .content {
+      display: block;
     }
   }
 }
