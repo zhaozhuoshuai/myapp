@@ -1,11 +1,7 @@
 <template>
   <view class="container">
     <!-- 搜索栏 -->
-    <view class="search">
-      <view class="input-box">
-        <input type="text" />
-      </view>
-    </view>
+    <search/>
     <!-- 轮播图 -->
     <swiper indicator-dots>
       <swiper-item>
@@ -115,11 +111,15 @@
 </template>
 
 <script>
+import search from '@/components/search.vue'
 export default {
   data() {
     return {
       title: "你好"
     };
+  },
+  components: {
+    search
   },
   onLoad() {},
   methods: {}
@@ -127,15 +127,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.search {
-  .input-box {
-    background-color: #ff2d4a;
-    padding: 20rpx 16rpx;
-    input {
-      background-color: #fff;
-    }
-  }
-}
+
 swiper {
   height: 340rpx;
   image {
