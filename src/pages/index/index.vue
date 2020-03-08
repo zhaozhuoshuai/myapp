@@ -158,7 +158,8 @@ swiper {
   .title {
     width: 750rpx;
     height: 60rpx;
-    padding: 20rpx 0 0 10rpx;
+	padding: 20rpx 0 0 10rpx;
+	box-sizing: border-box;
     background-color: #f4f4f4;
   }
   .items {
@@ -184,6 +185,18 @@ swiper {
       }
       &:nth-last-child(-n + 2) {
         margin-top: 10rpx;
+      }
+    }
+  }
+  &:first-child {
+    .items {
+      navigator {
+        width: 232rpx;
+        height: 188rpx;
+        &:first-child {
+          width: 232rpx;
+          height: 386rpx;
+        }
       }
     }
   }
