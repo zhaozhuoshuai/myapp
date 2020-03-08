@@ -20,7 +20,7 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "write",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#EB4450",
+		"navigationBarBackgroundColor": "#ff2d4a",
 		"backgroundColor": "#F8F8F8"
 	},
 	"tabBar": {
