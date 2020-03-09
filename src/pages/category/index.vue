@@ -16,117 +16,13 @@
         <scroll-view scroll-y>
           <!-- 封面图 -->
           <image src="http://static.botue.com/ugo/uploads/category.png" class="thumb"></image>
-          <view class="children">
-            <view class="title">电视</view>
+          <view class="children" :key="item.cat_id" v-for="item in rightData">
+            <view class="title">{{item.cat_name}}</view>
             <!-- 品牌 -->
             <view class="brands">
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_1.jpg"></image>
-                <text>曲面电视</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_2.jpg"></image>
-                <text>海信</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_3.jpg"></image>
-                <text>创维</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_4.jpg"></image>
-                <text>夏普</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_5.jpg"></image>
-                <text>TCL</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_6.jpg"></image>
-                <text>PPTV</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_7.jpg"></image>
-                <text>小米</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_8.jpg"></image>
-                <text>长虹</text>
-              </navigator>
-            </view>
-          </view>
-          <view class="children">
-            <view class="title">电视</view>
-            <!-- 品牌 -->
-            <view class="brands">
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_1.jpg"></image>
-                <text>曲面电视</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_2.jpg"></image>
-                <text>海信</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_3.jpg"></image>
-                <text>创维</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_4.jpg"></image>
-                <text>夏普</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_5.jpg"></image>
-                <text>TCL</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_6.jpg"></image>
-                <text>PPTV</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_7.jpg"></image>
-                <text>小米</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_8.jpg"></image>
-                <text>长虹</text>
-              </navigator>
-            </view>
-          </view>
-          <view class="children">
-            <view class="title">电视</view>
-            <!-- 品牌 -->
-            <view class="brands">
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_1.jpg"></image>
-                <text>曲面电视</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_2.jpg"></image>
-                <text>海信</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_3.jpg"></image>
-                <text>创维</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_4.jpg"></image>
-                <text>夏普</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_5.jpg"></image>
-                <text>TCL</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_6.jpg"></image>
-                <text>PPTV</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_7.jpg"></image>
-                <text>小米</text>
-              </navigator>
-              <navigator url="/pages/list/index">
-                <image src="http://static.botue.com/ugo/uploads/brand_8.jpg"></image>
-                <text>长虹</text>
+              <navigator url="/pages/list/index" :key="brand.cat_id" v-for="brand in item.children">
+                <image :src="brand.cat_icon"></image>
+                <text>{{brand.cat_name}}</text>
               </navigator>
             </view>
           </view>
@@ -151,6 +47,16 @@
     },
     onLoad(){
       this.loadData()
+    },
+    computed:{
+      rightData(){
+        //根据当前选中的顶级分类计算出二级和三级分类的数据
+        const data = this.categories.filter(item=>{
+          return item.cat_id===this.currentId
+        })
+        //[]空数组可以作为条件用于判断,返回为true
+        return data[0]?data[0].children:[]
+      }
     },
     methods: {
       handleChange(e){
