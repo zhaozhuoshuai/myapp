@@ -2,10 +2,26 @@
   <view class="search" :class="{focused:isFocused}">
     <view class="input-box">
       <input :placeholder="placeholder" type="text" @focus="goSearch" />
-      <text class='cancel' @click='handleCancel'>取消</text>
+      <text class="cancel" @click="handleCancel">取消</text>
     </view>
     <!-- 搜索结果 -->
-    <view class="content"></view>
+    <view class="content">
+      <!-- 标题 -->
+      <div class="title">
+        搜索历史
+        <!-- 小图标 -->
+        <span class="clear"></span>
+      </div>
+      <div class="history">
+        <navigator url>小米</navigator>
+        <navigator url>华为</navigator>
+        <navigator url>苹果</navigator>
+      </div>
+      <!-- 结果 -->
+      <!-- <scroll-view scroll-y class="result">
+        <navigator url>冰箱</navigator>
+      </scroll-view>-->
+    </view>
   </view>
 </template>
 
@@ -13,27 +29,27 @@
 export default {
   data() {
     return {
-      isFocused: false,//背景状态定义
-      placeholder:''
+      isFocused: false, //背景状态定义
+      placeholder: ""
     };
   },
   methods: {
     goSearch() {
       //解构赋值获取遮罩层高度;uni.getSystemInfoSync()获取可视区高度
-      const { windowHeight} = uni.getSystemInfoSync()
+      const { windowHeight } = uni.getSystemInfoSync();
       //组件传值-将可视区高度传到父组件
-      this.$emit('window-height', {height:windowHeight})
-      
+      this.$emit("window-height", { height: windowHeight });
+
       //当输入框获取聚焦时,在父元素上改变背景状态
-      this.isFocused = true
-      this.placeholder = '请输入想要的商品'
+      this.isFocused = true;
+      this.placeholder = "请输入想要的商品";
     },
-    handleCancel(){
+    handleCancel() {
       //点击取消按钮恢复原始状态
-      this.$emit('window-height',{height:'auto'})
+      this.$emit("window-height", { height: "auto" });
       //失去焦点时,恢复原状
-      this.isFocused = false
-      this.placeholder = ''
+      this.isFocused = false;
+      this.placeholder = "";
     }
   }
 };
@@ -48,8 +64,35 @@ export default {
     right: 0;
     bottom: 0;
     z-index: 9;
-    background-color:#fff;
+    background-color: #fff;
     display: none;
+    padding: 30rpx;
+    .title {
+      font-size: 27rpx;
+      line-height: 1;
+      color: #333;
+    }
+    .clear {
+      display: block;
+      width: 27rpx;
+      height: 27rpx;
+      float: right;
+      background-image: url(http://static.botue.com/ugo/images/clear.png);
+      background-size: cover;
+    }
+    .history {
+      padding-top: 30rpx;
+      navigator {
+        display: inline-block;
+        line-height: 1;
+        padding: 15rpx 20rpx 12rpx;
+        background-color: #ddd;
+        font-size: 24rpx;
+        margin-right: 20rpx;
+        margin-bottom: 15rpx;
+        color: #333;
+      }
+    }
   }
   .input-box {
     background-color: #ff2d4a;
@@ -67,7 +110,7 @@ export default {
       display: none;
     }
     &::before {
-      content:"";
+      content: "";
       width: 32rpx;
       height: 32rpx;
       display: none;
@@ -79,7 +122,7 @@ export default {
       background-repeat: no-repeat;
     }
     &::after {
-      content:"搜索";
+      content: "搜索";
       // display: block;
       position: absolute;
       left: 50%;
