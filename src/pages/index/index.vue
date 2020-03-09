@@ -1,7 +1,7 @@
 <template>
   <view class="container" :style="{height:pageHeight,overflow:'hidden'}">
     <!-- 搜索栏 -->
-    <search @window-height='handleWindowHeight'/>
+    <search @window-height="handleWindowHeight" />
     <!-- 轮播图 -->
     <swiper indicator-dots>
       <swiper-item :key="item.goods_id" v-for="item in swiperData">
@@ -10,93 +10,22 @@
     </swiper>
     <!-- 导航菜单 -->
     <view class="navs">
-      <navigator url>
-        <image src="/static/uploads/icon_index_nav_1@2x.png" />
-      </navigator>
-      <navigator url>
-        <image src="/static/uploads/icon_index_nav_2@2x.png" />
-      </navigator>
-      <navigator url>
-        <image src="/static/uploads/icon_index_nav_3@2x.png" />
-      </navigator>
-      <navigator url>
-        <image src="/static/uploads/icon_index_nav_4@2x.png" />
+      <navigator :key="item.index" v-for="item in navsData">
+        <image :src="item.image_src" />
       </navigator>
     </view>
     <!-- 楼层商品 -->
     <view class="floors">
       <!-- 第一层 -->
-      <view class="floor">
+      <view class="floor" :key="index" v-for="(item,index) in floorData">
         <!-- 标题 -->
         <view class="title">
-          <image src="/static/uploads/pic_floor01_title.png" />
+          <image :src="item.floor_title.image_src" />
         </view>
         <!-- 列表 -->
         <view class="items">
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_1@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_2@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_3@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_4@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_5@2x.png" />
-          </navigator>
-        </view>
-      </view>
-	  <!-- 第二层 -->
-      <view class="floor">
-        <!-- 标题 -->
-        <view class="title">
-          <image src="/static/uploads/pic_floor01_title.png" />
-        </view>
-        <!-- 列表 -->
-        <view class="items">
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_1@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_2@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_3@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_4@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_5@2x.png" />
-          </navigator>
-        </view>
-      </view>
-	  <!-- 第三层 -->
-      <view class="floor">
-        <!-- 标题 -->
-        <view class="title">
-          <image src="/static/uploads/pic_floor01_title.png" />
-        </view>
-        <!-- 列表 -->
-        <view class="items">
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_1@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_2@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_3@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_4@2x.png" />
-          </navigator>
-          <navigator url>
-            <image src="/static/uploads/pic_floor01_5@2x.png" />
+          <navigator url  :key="k" v-for="(img,k) in item.product_list">
+            <image :src="img.image_src" />
           </navigator>
         </view>
       </view>
@@ -105,41 +34,61 @@
 </template>
 
 <script>
-import search from '@/components/search.vue'
+import search from "@/components/search.vue";
 export default {
   data() {
     return {
       title: "你好",
-      pageHeight:'auto',
-      swiperData:[]
+      pageHeight: "auto",
+      swiperData: [],
+      navsData:[],
+      floorData:[]
     };
   },
   components: {
     search
   },
   onLoad() {
-    this.querySwiperData()
+    this.querySwiperData();
+    this.queryNavsData();
+    this.queryFloorData();
   },
   methods: {
-    handleWindowHeight (data) {
-      this.pageHeight = data.height + 'px'
+    handleWindowHeight(data) {
+      this.pageHeight = data.height + "px";
     },
-    querySwiperData (){
+    querySwiperData() {
       //获取轮播图数据
       wx.request({
-        url:'https://api-ugo-dev.itheima.net/api/public/v1/home/swiperdata',
-        success:(res)=>{
-          this.swiperData = res.data.message
+        url: "https://api-ugo-dev.itheima.net/api/public/v1/home/swiperdata",
+        success: res => {
+          this.swiperData = res.data.message;
         }
-      })
+      });
+    },
+    queryNavsData() {
+      //获取导航菜单数据
+      wx.request({
+        url: "https://api-ugo-dev.itheima.net/api/public/v1/home/catitems",
+        success: res => {
+          this.navsData = res.data.message;
+        }
+      });
+    },
+    queryFloorData() {
+      //获取导航菜单数据
+      wx.request({
+        url: "https://api-ugo-dev.itheima.net/api/public/v1/home/floordata",
+        success: res => {
+          this.floorData = res.data.message;
+        }
+      });
     }
-
   }
 };
 </script>
 
 <style lang="less" scoped>
-
 swiper {
   height: 340rpx;
   image {
@@ -162,20 +111,20 @@ swiper {
   .title {
     width: 750rpx;
     height: 60rpx;
-	padding: 20rpx 0 0 10rpx;
-	box-sizing: border-box;
+    padding: 20rpx 0 0 10rpx;
+    box-sizing: border-box;
     background-color: #f4f4f4;
   }
   .items {
-	  padding: 20rpx 16rpx;
-	  overflow: hidden;
+    padding: 20rpx 16rpx;
+    overflow: hidden;
     navigator {
-		padding-left: 10rpx;
+      padding-left: 10rpx;
       float: left;
       &:first-child {
         width: 232rpx;
-		height: 386rpx;
-		padding-left: 0;
+        height: 386rpx;
+        padding-left: 0;
       }
       &:nth-child(2),
       &:nth-child(5) {
