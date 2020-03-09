@@ -14,6 +14,7 @@
 
 <style>
 	/*每个页面公共css */
+	@import './fonts.less';
 	image {
 		width: 100%;
 		height: 100%;
