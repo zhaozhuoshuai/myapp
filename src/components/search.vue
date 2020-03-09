@@ -19,11 +19,18 @@ export default {
   },
   methods: {
     goSearch() {
+      //解构赋值获取遮罩层高度;uni.getSystemInfoSync()获取可视区高度
+      const { windowHeight} = uni.getSystemInfoSync()
+      //组件传值-将可视区高度传到父组件
+      this.$emit('window-height', {height:windowHeight})
+      
       //当输入框获取聚焦时,在父元素上改变背景状态
       this.isFocused = true
       this.placeholder = '请输入想要的商品'
     },
     handleCancel(){
+      //点击取消按钮恢复原始状态
+      this.$emit('window-height',{height:'auto'})
       //失去焦点时,恢复原状
       this.isFocused = false
       this.placeholder = ''
@@ -36,7 +43,7 @@ export default {
 .search {
   .content {
     position: absolute;
-    top: 90rpx;
+    top: 94rpx;
     left: 0;
     right: 0;
     bottom: 0;
@@ -51,7 +58,8 @@ export default {
     position: relative;
     input {
       background-color: #fff;
-      padding-left: 70rpx;
+      padding-left: 55rpx;
+      height: 60rpx;
       font-size: 27rpx;
       flex: 1;
     }
@@ -72,7 +80,7 @@ export default {
     }
     &::after {
       content:"搜索";
-      display: block;
+      // display: block;
       position: absolute;
       left: 50%;
       top: 50%;
