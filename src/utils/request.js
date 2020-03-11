@@ -5,6 +5,9 @@ export default {
             uni.showLoading({
                 title: '正在加载数据...'
             })
+            // if (path.que) {
+                
+            // }
             const [error, res] = await uni.request({
                 url: options.baseURL + path
             })
