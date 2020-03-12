@@ -12,7 +12,7 @@
     </swiper>
     <!-- 导航菜单 -->
     <view class="navs">
-      <navigator :key="item.index" v-for="item in navsData">
+      <navigator url="/pages/category/index" open-type="switchTab" :key="item.index" v-for="item in navsData">
         <image :src="item.image_src" />
       </navigator>
     </view>
@@ -26,8 +26,8 @@
         </view>
         <!-- 列表 -->
         <view class="items">
-          <navigator url :key="k" v-for="(img,k) in item.product_list">
-            <image :src="img.image_src" />
+          <navigator :key="k" v-for="(img,k) in item.product_list">         
+              <image :src="img.image_src" />
           </navigator>
         </view>
       </view>
@@ -96,9 +96,9 @@ export default {
     },
     async queryFloorData() {
       //获取商品展示数据
-      const { message } = await this.$request({
+      let { message } = await this.$request({
         path: "home/floordata"
-      });
+      }) 
       this.floorData = message;
     }
   }

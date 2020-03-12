@@ -22,7 +22,7 @@
     <view class="action">
       <button open-type="getPhoneNumber" class="icon-handset">联系客服</button>
       <text class="cart icon-cart" @click="goCart">购物车</text>
-      <text class="add">加入购物车</text>
+      <text class="add" @click="addCart">加入购物车</text>
       <text class="buy" @click="createOrder">立即购买</text>
     </view>
   </view>
@@ -33,7 +33,9 @@
     data () {
       return {
         id: '',//商品id状态位
-        goods: null//获取数据
+        goods: null,//获取数据
+        //购物车数据,先查询缓存是否有数据,没有则初始化为空数组
+        cart:uni.getStorageSync('mycart') || []
       }
     },
     //生命周期
@@ -46,6 +48,49 @@
     },
     //方法处理函数
     methods: {
+      //添加购物车
+      addCart(){
+        //先判断用户是否登录
+        // if (localStorage.getItem('mytoken')) {
+        //   //已经登录,直接把商品信息提交给后台接口
+        // }else{
+        //   //没有登录,先把商品信息添加到缓存,登录后再提交数据
+        // }
+        //先按照没有登录处理流程
+        //声明对象
+        let product = {
+          goods_id:this.goods.goods_id,//商品id
+          goods_name:this.goods.goods_name,//商品名称
+          goods_price:this.goods.goods_price,//商品价格
+          goods_num:1,//商品数量
+          goods_img:this.goods.goods_small_logo//商品图片
+        }
+        //加入购物车:判断商品是否在购物车里面返回true或false
+        let isExist = this.cart.some(item=>{
+          return item.goods_id===this.goods.goods_id
+        })
+        //有数据的话
+        if (isExist) {
+          //把商品数量累计
+          this.cart.some(item=>{
+            if (item.goods_id===this.goods.goods_id) {
+              //修改商品数量数据
+              item.goods_num+=1
+              //找到商品后,终止后续遍历
+              return true
+            }
+          })
+        } else {
+          // 没有数据的话,首次添加
+          this.cart.push(product)
+        }
+        //将购物车数据进行缓存
+        uni.setStorageSync('mytoken',this.cart)
+        //加入成功后给个提示
+        uni.showToast({
+          title:'加入购物车成功'
+        })
+      },
       // 加载商品的详细数据
       async loadData (id) {
         //解构赋值调用api接口
@@ -59,13 +104,16 @@
         this.goods = message
       },
       goCart () {
+        //跳转到购物车页面
         uni.switchTab({
           url: '/pages/cart/index'
         })
       },
       createOrder () {
-        uni.navigateTo({
-          url: '/pages/order/index'
+        //先加入购物车在跳转到购物车页面
+        this.addCart()
+        uni.switchTab({
+          url: '/pages/cart/index'
         })
       }
     }
