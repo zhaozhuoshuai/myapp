@@ -90,6 +90,7 @@
         this.loaded = false
       },
       goDetail (id) {
+        console.log(id)
         uni.navigateTo({
           url: '/pages/goods/index?id=' + id
         })

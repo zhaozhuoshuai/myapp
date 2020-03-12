@@ -15,14 +15,14 @@
     </view>
     <!-- 商品详情 -->
     <view class="detail">
-      <view v-html='goods.goods_introduce'></view>
-      <!-- <rich-text :nodes='goods.goods_introduce'></rich-text> -->
+      <view :style='{fontSize: 0}' v-html='goods.goods_introduce'></view>
+      <!-- <rich-text :style='{fontSize: 0}' :nodes='goods.goods_introduce'></rich-text> -->
     </view>
     <!-- 操作 -->
     <view class="action">
       <button open-type="getPhoneNumber" class="icon-handset">联系客服</button>
       <text class="cart icon-cart" @click="goCart">购物车</text>
-      <text class="add" @click="addCart">加入购物车</text>
+      <text class="add" @click='addCart'>加入购物车</text>
       <text class="buy" @click="createOrder">立即购买</text>
     </view>
   </view>
@@ -32,85 +32,81 @@
   export default {
     data () {
       return {
-        id: '',//商品id状态位
-        goods: null,//获取数据
-        //购物车数据,先查询缓存是否有数据,没有则初始化为空数组
-        cart:uni.getStorageSync('mycart') || []
+        // 当前商品的id
+        id: '',
+        // 当前商品的所有信息
+        goods: null,
+        // 购物车数据,先查询缓存是否有数据，如果没有初始化为空数组
+        cart: uni.getStorageSync('mycart') || []
       }
     },
-    //生命周期
     onLoad (param) {
       // console.log(param)
-      //传过来的id赋值给状态id
       this.id = param.id
-      //调用loadData方法
       this.loadData(param.id)
     },
-    //方法处理函数
     methods: {
-      //添加购物车
-      addCart(){
-        //先判断用户是否登录
+      addCart () {
+        // 添加购物车
+        // 先判断用户是否登录
         // if (localStorage.getItem('mytoken')) {
-        //   //已经登录,直接把商品信息提交给后台接口
-        // }else{
-        //   //没有登录,先把商品信息添加到缓存,登录后再提交数据
+        //   // 已经登录，直接将当前商品信息提交到后台接口即可
+        // } else {
+        //   // 没有登录，把商品信息添加到缓存
         // }
-        //先按照没有登录处理流程
-        //声明对象
+
+        // 直接按照没有登录的流程实现
         let product = {
-          goods_id:this.goods.goods_id,//商品id
-          goods_name:this.goods.goods_name,//商品名称
-          goods_price:this.goods.goods_price,//商品价格
-          goods_num:1,//商品数量
-          goods_img:this.goods.goods_small_logo//商品图片
+          goods_id: this.goods.goods_id,
+          goods_name: this.goods.goods_name,
+          goods_price: this.goods.goods_price,
+          goods_num: 1,
+          goods_img: this.goods.goods_small_logo,
+          goods_check: false
         }
-        //加入购物车:判断商品是否在购物车里面返回true或false
-        let isExist = this.cart.some(item=>{
-          return item.goods_id===this.goods.goods_id
+        // 加入购物车:判断当前商品是否在购物车里面
+        let isExist = this.cart.some(item => {
+          return item.goods_id === this.goods.goods_id
         })
-        //有数据的话
         if (isExist) {
-          //把商品数量累计
-          this.cart.some(item=>{
-            if (item.goods_id===this.goods.goods_id) {
-              //修改商品数量数据
-              item.goods_num+=1
-              //找到商品后,终止后续遍历
+          // 已经存在该商品，需要累加商品的数量
+          this.cart.some(item => {
+            if (item.goods_id === this.goods.goods_id) {
+              // 修改当前商品的数据
+              item.goods_num += 1
+              // 找到商品后，终止后续遍历
               return true
             }
           })
         } else {
-          // 没有数据的话,首次添加
+          // 首次添加商品
           this.cart.push(product)
         }
-        //将购物车数据进行缓存
-        uni.setStorageSync('mytoken',this.cart)
-        //加入成功后给个提示
+        // 将购物车数据进行缓存
+        uni.setStorageSync('mycart', this.cart)
+        // 加入成功后提示一下
         uni.showToast({
-          title:'加入购物车成功'
+          title: '加入购物车成功'
         })
       },
-      // 加载商品的详细数据
       async loadData (id) {
-        //解构赋值调用api接口
+        // 加载商品的详细数据
         const {message} = await this.$request({
-          path: 'goods/detail',//地址
+          path: 'goods/detail',
           param: {
-            goods_id: id//参数
+            goods_id: id
           }
         })
-        //把需要的数据放到goods里面去做遍历
         this.goods = message
       },
       goCart () {
-        //跳转到购物车页面
+        // 跳转到购物车页面（Tab页面）
         uni.switchTab({
           url: '/pages/cart/index'
         })
       },
       createOrder () {
-        //先加入购物车在跳转到购物车页面
+        // 先加入购物车，然后跳转到购物车页面
         this.addCart()
         uni.switchTab({
           url: '/pages/cart/index'
@@ -121,6 +117,20 @@
 </script>
 
 <style scoped lang="less">
+  .lazyimg {
+    background-color: pink;
+    p {
+      margin: 0;
+      padding: 0;
+    }
+    a {
+      margin: 0;
+      padding: 0;
+    }
+    image {
+      vertical-align: middle;
+    }
+  }
   .wrapper {
     margin-bottom: 100rpx;
     background-color: #f4f4f4;
@@ -187,6 +197,7 @@
     width: 100%;
     height: 480rpx;
     margin-top: 20rpx;
+    background-color: blue;
   }
 
   .action {

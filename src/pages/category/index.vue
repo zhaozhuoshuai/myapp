@@ -6,9 +6,9 @@
     <view class="category">
       <!-- 顶级分类 -->
       <view class="sup">
-        <scroll-view scroll-y @click="handleChange">
+        <scroll-view scroll-y @click='handleChange'>
           <!-- <text class="active">大家电</text> -->
-          <text :data-id='item.cat_id' :class="{active:currentId===item.cat_id}" :key="item.cat_id" v-for="item in categories">{{item.cat_name}}</text>
+          <text :data-id='item.cat_id' :class='{active: currentId === item.cat_id}' :key='item.cat_id' v-for='item in categories'>{{item.cat_name}}</text>
         </scroll-view>
       </view>
       <!-- 子级分类 -->
@@ -16,11 +16,11 @@
         <scroll-view scroll-y>
           <!-- 封面图 -->
           <image src="http://static.botue.com/ugo/uploads/category.png" class="thumb"></image>
-          <view class="children" :key="item.cat_id" v-for="item in rightData">
+          <view class="children" :key='item.cat_id' v-for='item in rightData'>
             <view class="title">{{item.cat_name}}</view>
             <!-- 品牌 -->
             <view class="brands">
-              <navigator url="/pages/list/index" :key="brand.cat_id" v-for="brand in item.children">
+              <navigator url="/pages/list/index" :key='brand.cat_id' v-for='brand in item.children'>
                 <image :src="brand.cat_icon"></image>
                 <text>{{brand.cat_name}}</text>
               </navigator>
@@ -36,41 +36,45 @@
   import search from '@/components/search';
 
   export default {
-    data() {
+    data () {
       return {
-        categories:[],//所有分类数据
-        currentId:1//当前分类数据
+        // 分类所有数据
+        categories: [],
+        // 当前分类
+        currentId: 1
       }
     },
     components: {
       search
     },
-    onLoad(){
+    onLoad () {
       this.loadData()
     },
-    computed:{
-      rightData(){
-        //根据当前选中的顶级分类计算出二级和三级分类的数据
-        const data = this.categories.filter(item=>{
-          return item.cat_id===this.currentId
+    computed: {
+      rightData () {
+        // 根据当前选中的一级分类计算出二级和三级分类的数据
+        // 计算属性会对已有的数据进行缓存
+        const data = this.categories.filter(item => {
+          return item.cat_id === this.currentId
         })
-        //[]空数组可以作为条件用于判断,返回为true
-        return data[0]?data[0].children:[]
+        // [] 作为条件是true if ([]) {}
+        return data[0]? data[0].children: []
       }
     },
     methods: {
-      handleChange(e){
-        //控制顶级分类切换
-        this.currentId=e.target.dataset.id
+      handleChange (e) {
+        // 控制一级分类的切换
+        // console.log('change' + e.target.dataset.id)
+        this.currentId = e.target.dataset.id
       },
-      async loadData (){
+      async loadData () {
         // 调用分类接口获取数据
-        const {message}=await this.$request({
-          path:'categories'
+        const { message } = await this.$request({
+          path: 'categories'
         })
         this.categories = message
       }
-    },
+    }
   }
 </script>
 

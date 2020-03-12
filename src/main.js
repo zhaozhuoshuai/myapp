@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App'
-import request from '@/utils/request.js'
-Vue.use(request, {
+import MyPlugin from '@/utils/request.js'
+Vue.use(MyPlugin, {
   //后台公共接口
   baseURL:'https://api-ugo-dev.itheima.net/api/public/v1/'
 })

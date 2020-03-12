@@ -1,113 +1,104 @@
 <template>
-  <view class="search" :class="{focused:isFocused}">
+  <view class="search" :class='{focused: isFocused}'>
+    <!-- 搜索栏标签 -->
     <view class="input-box">
-      <input
-        @confirm="handelEnter"
-        v-model="keyword"
-        @input="handleQuery"
-        :placeholder="placeholder"
-        type="text"
-        @focus="goSearch"
-      />
-      <text class="cancel" @click="handleCancel">取消</text>
+      <input @confirm='handleEnter' v-model='keyword' @input='handleQuery' :placeholder='placeholder' type="text" @focus='goSearch'/>
+      <text class='cancel' @click='handleCancel'>取消</text>
     </view>
-    <!-- 搜索结果 -->
+    <!-- 搜索的结果 -->
     <view class="content">
       <!-- 标题 -->
       <div class="title">
         搜索历史
-        <!-- 小图标 -->
-        <span class="clear" @click="handleClear"></span>
+        <span class="clear" @click='handleClear'></span>
       </div>
       <!-- 搜索历史关键字 -->
       <div class="history">
-        <navigator :url="'/pages/list/index?kw='+item" :key="index" v-for="(item,index) in history">{{item}}</navigator>
+        <navigator :url="'/pages/list/index?kw=' + item" :key='index' v-for='(item, index) in history'>
+          {{item}}
+        </navigator>
       </div>
-      <!-- 结果 -->
-      <scroll-view v-if="qlist.length>0" scroll-y class="result">
-        <navigator :url="'/pages/goods/index?id='+item.goods_id" :key="item.goods_id" v-for="item in qlist">{{item.goods_name}}</navigator>
+      <!-- 搜索结果 -->
+      <scroll-view v-if='qlist.length>0' scroll-y class="result">
+        <navigator :url="'/pages/goods/index?id='+item.goods_id" :key='item.goods_id' v-for='item in qlist'>
+          {{item.goods_name}}
+        </navigator>
       </scroll-view>
     </view>
   </view>
 </template>
-
 <script>
 export default {
-  data() {
+  data () {
     return {
-      isFocused: false, //背景状态位
-      placeholder: "", //搜索框关键字
-      keyword: "", //关键字绑定
-      qlist: [], //商品列表
-      //缓存历史关键字:先查询之前的搜索历史,默认为[]
-      history: uni.getStorageSync("history") || [],
-      timer:-1//延时器
-    };
+      isFocused: false,
+      placeholder: '',
+      keyword: '',
+      qlist: [],
+      // 缓存历史关键字：先查询之前的搜索历史，如果没有查到，默认为[]
+      history: uni.getStorageSync('history') || [],
+      timer: -1
+    }
   },
   methods: {
-    //清空搜索历史
-    handleClear() {
+    handleClear () {
+      // 清空搜索历史：
       // 1、清空缓存
-      uni.removeStorageSync("history");
+      uni.removeStorageSync('history')
       // 2、清空状态数据
-      this.history = [];
+      this.history = []
     },
-    handelEnter(e) {
+    handleEnter (e) {
       // 监听回车事件
-      //获取输入框最新的值
-      let v = e.detail.value;
-      //把数据追加到数组的前面用unshift
-      this.history.unshift(v);
-      //控制数组的去重操作
-      let arr = [...new Set(this.history)];
-      //更新状态
-      this.history = arr;
-      //把当前的历史关键字进行缓存
-      uni.setStorageSync("history", arr);
-      //回车时跳转到商品列表页面
+      // 获取输入框最新的值
+      let v = e.detail.value
+      this.history.unshift(v)
+      // 控制数组的去重操作
+      let arr = [...new Set(this.history)]
+      // 更新状态
+      this.history = arr
+      // 把当前的历史关键字进行缓存
+      uni.setStorageSync('history', arr)
+      // 回车时跳转到商品列表页面
       uni.navigateTo({
-        url:'/pages/list/index?kw='+ v
+        url: '/pages/list/index?kw=' + v
       })
     },
-    //根据关键字调用后台接口查询商品列表
-    handleQuery() {
+    handleQuery () {
       // 通过函数防抖的方式限制接口调用的频率
       clearTimeout(this.timer)
-      this.timer = setTimeout(async ()=>{
-      const { message } = await this.$request({
-        path: "goods/qsearch?query=" + this.keyword
-      });
-      //解构出来的赋值给qlist
-      this.qlist = message;
-      },1000)
+      this.timer = setTimeout(async () => {
+        // 根据关键字调用后台接口查询商品列表
+        const {message} = await this.$request({
+          path: 'goods/qsearch?query=' + this.keyword
+        })
+        this.qlist = message
+      }, 1000)
     },
-    goSearch() {
-      //解构赋值获取遮罩层高度;uni.getSystemInfoSync()获取可视区高度
-      const { windowHeight } = uni.getSystemInfoSync();
-      //组件传值-将可视区高度传到父组件
-      this.$emit("window-height", { height: windowHeight });
-
-      //当输入框获取聚焦时,在父元素上改变背景状态
-      this.isFocused = true;
-      this.placeholder = "请输入想要的商品";
+    goSearch () {
+      const { windowHeight } = uni.getSystemInfoSync()
+      // 将可视区高度传递到父组件
+      this.$emit('window-height', {height: windowHeight})
+      // 当输入框获取焦点时，在父元素添加一个类名 focused
+      this.isFocused = true
+      this.placeholder = '请输入想要的商品'
     },
-    handleCancel() {
-      //点击取消按钮恢复原始状态
-      this.$emit("window-height", { height: "auto" });
-      //失去焦点时,恢复原状
-      this.isFocused = false;
-      //清空提示信息
-      this.placeholder = "";
-      //清除关键字
-      this.keyword = "";
-      //清空搜索结果
-      this.qlist = [];
+    handleCancel () {
+      // 点击取消按钮恢复原始状态
+      this.$emit('window-height', {height: 'auto'})
+      // 取消动作：恢复原始状态
+      this.isFocused = false
+      // 清空提示信息
+      this.placeholder = ''
+      // 清除关键字
+      this.keyword = ''
+      // 清空搜索结果
+      this.qlist = []
     }
   }
-};
+}
 </script>
-
-<style lang="less" scoped>
+<style lang="less">
 .search {
   .content {
     position: absolute;
@@ -165,7 +156,7 @@ export default {
     }
   }
   .input-box {
-    background-color: #ff2d4a;
+    background-color: #FF2D4A;
     padding: 20rpx 16rpx;
     display: flex;
     position: relative;
@@ -173,27 +164,26 @@ export default {
       background-color: #fff;
       padding-left: 55rpx;
       height: 60rpx;
-      font-size: 27rpx;
       flex: 1;
     }
     .cancel {
       display: none;
     }
+
     &::before {
-      content: "";
+      content: '';
+      display: none;
       width: 32rpx;
       height: 32rpx;
-      display: none;
       position: absolute;
       top: 50%;
-      transform: translate(20rpx, -50%);
-      background-image: url(http://static.botue.com/ugo/images/icon_search%402x.png);
+      transform: translate(15rpx, -50%);
+      background-image: url('http://static.botue.com/ugo/images/icon_search%402x.png');
       background-size: 32rpx;
-      background-repeat: no-repeat;
     }
+
     &::after {
-      content: "搜索";
-      // display: block;
+      content: '搜索';
       position: absolute;
       left: 50%;
       top: 50%;
@@ -201,19 +191,22 @@ export default {
       transform: translate(-50%, -50%);
       font-size: 24rpx;
       color: #ccc;
-      background-image: url(http://static.botue.com/ugo/images/icon_search%402x.png);
+      background-image: url('http://static.botue.com/ugo/images/icon_search%402x.png');
       background-size: 32rpx;
       background-repeat: no-repeat;
     }
   }
   &.focused {
+    .content {
+      display: block;
+    }
     .input-box {
-      background-color: #eeeeee;
-      &::before {
-        display: block;
-      }
+      background-color: #eee;
       &::after {
         display: none;
+      }
+      &::before {
+        display: block;
       }
     }
     .cancel {
@@ -221,12 +214,10 @@ export default {
       width: 100rpx;
       height: 50rpx;
       line-height: 50rpx;
-      font-size: 30rpx;
       text-align: center;
-    }
-    .content {
-      display: block;
+      font-size: 30rpx;
     }
   }
 }
+
 </style>
