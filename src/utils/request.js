@@ -29,7 +29,7 @@ export default {
           // 请求参数
           data: param,
           //请求头
-          header:header
+          // header:header
         })
         // 返回异步接口的结果
         // 隐藏提示
