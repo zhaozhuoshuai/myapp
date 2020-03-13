@@ -14,7 +14,7 @@
 // 采用官方规范的方式开发插件
 export default {
     install: (Vue, options) => {
-      Vue.prototype.$request = async ({path, param}) => {
+      Vue.prototype.$request = async ({path, param,method='get'}) => {
         // 实现发送请求
         uni.showLoading({
           title: '正在加载数据...'
@@ -22,9 +22,14 @@ export default {
         })
         // uni-app对部分小程序原生API进行了封装，可以支持Promise
         const [error, res] = await uni.request({
+          //请求方式
+          method:method,
+          //请求地址
           url: options.baseURL + path,
           // 请求参数
-          data: param
+          data: param,
+          //请求头
+          header:header
         })
         // 返回异步接口的结果
         // 隐藏提示

@@ -75,9 +75,7 @@
         // 单价 * 数量 并 进行累加
         let total = 0
         this.checkedProducts.forEach(item => {
-          if (item.goods_check) {
             total += item.goods_price * item.goods_num
-          }
         })
         return total
       },
@@ -117,8 +115,28 @@
             url: '/pages/auth/index'
           })
         }
-        // 4、创建订单
-
+        // 4、登录成功后
+        let list = this.checkedProducts.map(item => {
+          return {
+            goods_id: item.goods_id, 
+            goods_number: item.goods_num, 
+            goods_price: item.goods_price
+          }
+        })
+        const orderParam = {
+          order_price: this.countTotal,
+          consignee_addr: this.addressDetail,
+          goods: list
+        }
+        //调用接口
+        this.$request({
+          method:'post',
+          path:'my/orders/create',
+          param:orderParam,
+          header:{
+            Authorization: token
+          }
+        })
       },
       getAddress () {
         // 获取收货地址
